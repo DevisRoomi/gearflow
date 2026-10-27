@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --paper-bg: #F5EFEB;
+    --paper-card: #FFFFFF;
+    --carbon-ink: #141416;
+    --accent-yellow: #FDE047;
+    --accent-mint: #BBF7D0;
+    --accent-sky: #BAE6FD;
+    --accent-coral: #FDA4AF;
+    --accent-orange: #FED7AA;
+  }
+
+  body {
+    background-color: var(--paper-bg);
+    color: var(--carbon-ink);
+    font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-syne), sans-serif;
+  }
+
+  .font-mono-code {
+    font-family: var(--font-mono), monospace;
+  }
+}
+
+.brutal-card {
+  border: 2.5px solid #141416;
+  box-shadow: 4px 4px 0px #141416;
+  border-radius: 12px;
+  background-color: #FFFFFF;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.brutal-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #141416;
+}
+
+.brutal-box {
+  border: 2.5px solid #141416;
+  box-shadow: 4px 4px 0px #141416;
+  border-radius: 12px;
+  background-color: #FFFFFF;
+}
+
+.brutal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid #141416;
+  box-shadow: 3px 3px 0px #141416;
+  border-radius: 9px;
+  font-weight: 700;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brutal-btn:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 5px 5px 0px #141416;
+}
+
+.brutal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #141416;
+}
+
+.brutal-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #141416;
+  box-shadow: 2px 2px 0px #141416;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.brutal-input {
+  border: 2.5px solid #141416;
+  box-shadow: 3px 3px 0px #141416;
+  border-radius: 9px;
+  background-color: #FFFFFF;
+  outline: none;
+  transition: box-shadow 0.12s ease;
+}
+
+.brutal-input:focus {
+  box-shadow: 5px 5px 0px #141416;
+  background-color: #FFFDF8;
+}
