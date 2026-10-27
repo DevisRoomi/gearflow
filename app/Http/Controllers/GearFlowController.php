@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLoanRequest;
+use App\Http\Requests\UpdateLoanStatusRequest;
 use App\Models\Category;
 use App\Models\Gear;
 use App\Models\Loan;
@@ -55,17 +57,9 @@ class GearFlowController extends Controller
         return view('gearflow', compact('categories', 'gears', 'loans', 'stats', 'users', 'availableGears', 'selectedCategory', 'search'));
     }
 
-    public function storeLoan(Request $request)
+    public function storeLoan(StoreLoanRequest $request)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'gear_ids' => 'required|array|min:1',
-            'gear_ids.*' => 'exists:gears,id',
-            'borrow_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:borrow_date',
-            'purpose' => 'required|string|max:255',
-        ]);
-
+        $validated = $request->validated();
         $loanCode = 'LN-' . date('Ymd') . '-' . strtoupper(Str::random(4));
 
         $loan = Loan::create([
@@ -85,15 +79,12 @@ class GearFlowController extends Controller
             ]);
         }
 
-        return redirect()->route('gearflow.index')->with('success', "Pengajuan pinjam {$loanCode} berhasil dibuat!");
+        return redirect()->route('gearflow.index')->with('success', "Pengajuan surat jalan {$loanCode} tercatat di sistem.");
     }
 
-    public function updateStatus(Request $request, Loan $loan)
+    public function updateStatus(UpdateLoanStatusRequest $request, Loan $loan)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:approved,active,returned,rejected',
-        ]);
-
+        $validated = $request->validated();
         $newStatus = $validated['status'];
         $loan->update(['status' => $newStatus]);
 
@@ -101,13 +92,19 @@ class GearFlowController extends Controller
             foreach ($loan->items as $item) {
                 $item->gear->update(['status' => 'borrowed']);
             }
+            $msg = "Alat untuk surat jalan {$loan->loan_code} resmi diserahkan ke peminjam.";
         } elseif ($newStatus === 'returned') {
             $loan->update(['returned_at' => now()->toDateString()]);
             foreach ($loan->items as $item) {
                 $item->gear->update(['status' => 'available']);
             }
+            $msg = "Pengembalian surat jalan {$loan->loan_code} selesai diinspeksi. Stok alat kembali Ready.";
+        } elseif ($newStatus === 'rejected') {
+            $msg = "Surat jalan {$loan->loan_code} ditolak oleh pengelola lab.";
+        } else {
+            $msg = "Status surat jalan {$loan->loan_code} diubah menjadi {$newStatus}.";
         }
 
-        return redirect()->route('gearflow.index')->with('success', "Status pinjaman {$loan->loan_code} diperbarui ke {$newStatus}!");
+        return redirect()->route('gearflow.index')->with('success', $msg);
     }
 }
